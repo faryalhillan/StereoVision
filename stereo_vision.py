@@ -612,7 +612,7 @@ def stereo_frame_consumer(model, Q, frame_queue, close_event, startup_event, con
 
 # === MAIN SCRIPT (CPU unless otherwise noted) ===
 # --- Load Configuration from YAML File ---
-with open("config/stereovision.yaml", 'r') as f:
+with open("config/stereo_vision.yaml", 'r') as f:
     config = yaml.safe_load(f)
 
 # Paths
