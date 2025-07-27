@@ -1,0 +1,10 @@
+# CUDA 12.9
+# CUDNN 8.9.7
+ultralytics
+numpy
+filterpy
+# CUDA ENABLED DEPENDENCIES
+tensorrt
+opencv-python 4.12.0
+torch
+torchvision

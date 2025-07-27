@@ -1,0 +1,79 @@
+# Configuration for the stereo vision tracking script
+
+# File paths for input data and models
+paths:
+  calibration: "data/calibration/params/stereo_calibration.npz"
+  model: "train/runs/detect/720_best/weights/best.engine"
+  tracker: "config/bytetrack.yaml"
+  video_left: "data/content/left 3.mp4"
+  video_right: "data/content/right 3.mp4"
+
+# Video processing settings
+video:
+  default_fps: 30.0  # Default FPS when video FPS cannot be determined
+
+# BEV (Bird's Eye View) visualization settings
+bev:
+  # BEV image size in pixels [width, height]
+  size: [600, 960]
+  # Scale of the BEV map in pixels per meter
+  scale: 20
+  # Toggle for drawing the object's path
+  draw_trackline: true
+  # Grid and axis colors [B, G, R]
+  grid_color: [60, 60, 60]
+  axis_color: [200, 200, 200]
+  # Track line settings
+  track_line_color: [255, 255, 0]  # [B, G, R] - cyan
+  track_line_thickness: 2
+  # Start and current position markers
+  start_point_color: [0, 0, 255]   # [B, G, R] - blue
+  start_point_radius: 8
+  current_point_color: [0, 255, 0] # [B, G, R] - green
+  current_point_radius: 6
+  # Text settings
+  font_scale: 0.6
+  font_thickness: 2
+  label_color: [255, 255, 255]     # [B, G, R] - white
+
+# Kalman Filter settings for position smoothing
+kalman:
+  # Enable/disable Kalman filtering
+  enabled: true
+  # Measurement noise covariance (lower = trust measurements more)
+  measurement_noise: 0.1
+  # Process noise covariance (lower = smoother but slower response)
+  process_noise: 0.1
+  # Initial covariance (uncertainty at start)
+  initial_covariance: 100
+  # Frame rate for filter timing (auto-detected if 0)
+  fps: 30
+
+# Data logging settings
+logging:
+  # Toggle for saving tracking data to CSV
+  save_tracking_data: true
+  # Directory to save tracking data (timestamped folders will be created inside)
+  output_dir: "data/tracking"
+
+# Stereo matching settings
+stereo:
+  # Maximum Y difference for stereo matching (pixels)
+  max_y_diff: 10.0
+
+queue:
+  # Maximum size of the frame queue for producer-consumer model
+  maxsize: 64
+
+model:
+  # Batch size for processing frames
+  batch_size: 6
+  # Image size for model input in pixels
+  image_size: 1280
+
+display:
+  # Size of the display windows in pixels [width, height]
+  size: [640, 480]
+  # Position of the window on the screen [x, y]
+  left_window_pos: [0, 100]
+  right_window_pos: [640, 100]
