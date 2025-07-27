@@ -3,6 +3,8 @@
 ultralytics
 numpy
 filterpy
+pandas
+matplotlib
 # CUDA ENABLED DEPENDENCIES
 tensorrt
 opencv-python 4.12.0

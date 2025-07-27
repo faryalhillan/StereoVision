@@ -31,6 +31,9 @@ StereoVision/
 
 ### Prerequisites
 - Python 3.8+
+- CUDA and CUDNN
+- opencv-python with CUDA module enabled (you can get the wheels at: https://github.com/cudawarped/opencv-python-cuda-wheels)
+- PyTorch with CUDA (https://pytorch.org/get-started/locally/)
 - Recommended: NVIDIA GPU for deep learning models
 
 ### Installation
