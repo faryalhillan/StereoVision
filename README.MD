@@ -1,6 +1,6 @@
 # StereoVision Project
 
-StereoVision is a computer vision project focused on stereo camera calibration, 3D reconstruction, and object tracking using stereo video data. The project is designed for research and practical applications in surveillance, UAVs, or autonomous systems.
+StereoVision is a GPU-accelerated computer vision project focused on stereo camera calibration, real-time 3D reconstruction, and object tracking using stereo video data. The project leverages CUDA and modern deep learning for research and practical applications in surveillance, UAVs, or autonomous systems.
 
 ## Features
 - **Stereo Camera Calibration**: Complete calibration pipeline with parameter extraction and validation
