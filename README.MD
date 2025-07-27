@@ -39,7 +39,7 @@ StereoVision/
 ### Installation
 1. Clone the repository:
    ```powershell
-   git clone <repo-url>
+   git clone https://github.com/faryalhillana/StereoVision.git
    cd StereoVision
    ```
 2. Install dependencies:
