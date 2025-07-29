@@ -10,6 +10,8 @@ StereoVision is a GPU-accelerated computer vision project focused on stereo came
 - **Bird's Eye View (BEV) Mapping**: Real-time top-down visualization with track history and grid overlay
 - **Multi-threaded Processing**: Producer-consumer architecture for synchronized stereo video processing
 - **Data Logging & Export**: CSV export with timestamps, 3D coordinates, and disparity values
+- **Performance Benchmarking**: Comprehensive model performance analysis with detailed metrics and visualizations
+- **Data Analysis & Validation**: Ground truth comparison with flight data and accuracy assessment
 - **GPU Optimization**: CUDA support for video decoding, rectification, and neural network inference
 - **Modular Configuration**: YAML-based configuration for all processing parameters
 
@@ -35,10 +37,11 @@ StereoVision/
 
 ### Prerequisites
 - Python 3.8+
-- CUDA and CUDNN
-- opencv-python with CUDA module enabled (you can get the wheels at: https://github.com/cudawarped/opencv-python-cuda-wheels)
-- PyTorch with CUDA (https://pytorch.org/get-started/locally/)
-- Recommended: NVIDIA GPU for deep learning models
+- CUDA and cuDNN (Tested on CUDA 12.9.1 and CUDNN 9.10.2)
+- NVIDIA GPU with compute capability 6.0+ (recommended)
+- OpenCV with CUDA support (Tested on OpenCV 4.12.0)
+- PyTorch with CUDA support
+- TensorRT for optimized inference
 
 ### Installation
 1. Clone the repository:
@@ -50,47 +53,81 @@ StereoVision/
    ```powershell
    pip install -r requirements.txt
    ```
+   Note: 
+   For CUDA-enabled OpenCV, you may need to install the prebuilt wheels at:
+   https://github.com/cudawarped/opencv-python-cuda-wheels
+   For CUDA-enabled PyTorch, you need to follow this guide:
+   https://pytorch.org/get-started/locally/
 
 ### Configuration
 - Edit YAML files in `config/` to set up camera parameters, model paths, and tracking options.
+- `stereo_vision.yaml`: Main configuration for video paths, BEV settings, Kalman filtering
+- `bytetrack.yaml`: ByteTrack multi-object tracking parameters
 
 ### Usage
 
-#### Training Models
-- Use scripts and notebooks in `train/` to train or fine-tune detection models.
+#### 1. Stereo Camera Calibration (`stereo_calibration.ipynb`)
+Source: https://github.com/ChristianOrr/stereo-camera-calibration
+Interactive Jupyter notebook for complete stereo camera calibration:
 
-#### Stereo Calibration
-- Use `stereo_calibration.ipynb` to calibrate your stereo camera setup.
+#### 2. Model Training and Performance Analysis (`train/train.ipynb`)
+Comprehensive YOLO training pipeline with detailed performance benchmarking
 
-#### Stereo Vision Processing (`stereo_vision.py`)
+#### 3. Stereo Vision Processing (`stereo_vision.py`)
 The main stereo vision script provides advanced real-time processing capabilities:
 
 **Core Features:**
 - **GPU-Accelerated Processing**: Utilizes CUDA for video decoding, frame rectification, and YOLO inference
 - **Synchronized Stereo Video Processing**: Producer-consumer architecture for efficient frame synchronization
-- **Real-time Object Detection**: YOLO-based detection with batch processing for optimal performance
-- **3D Position Estimation**: Computes world coordinates (X, Y, Z) from stereo disparity using calibration matrices
-- **Kalman Filtering**: Optional position smoothing with configurable noise parameters for stable tracking
-- **Bird's Eye View (BEV) Visualization**: Real-time top-down view with customizable grid, track history, and positioning
-- **CSV Data Logging**: Timestamped tracking data export with configurable intervals
-- **Multi-threaded Architecture**: Separate threads for frame production and processing to maintain real-time performance
+- **Real-time Object Detection**: YOLO-based detection with configurable batch processing
+- **3D Position Estimation**: Computes world coordinates (X, Y, Z) from stereo disparity using Q matrix
+- **Y-Constraint Stereo Matching**: Improved accuracy with configurable Y-difference tolerance (±10px)
+- **Optional Kalman Filtering**: Position smoothing with configurable noise parameters
+- **Bird's Eye View (BEV) Visualization**: Real-time top-down view with customizable grid and track history
+- **CSV Data Logging**: Timestamped tracking data export with automatic folder creation
+- **Multi-threaded Architecture**: Separate threads for frame production and processing
 
-**Technical Capabilities:**
-- Stereo rectification using pre-computed calibration maps
-- Y-constraint stereo matching for improved accuracy
-- Configurable batch processing (1-8 frames per batch)
-- Real-time display of annotated left/right camera views
-- Track history visualization with unlimited path memory
-- Automatic timestamped output folder creation
+**Technical Specifications:**
+- **Frame Queue Management**: Configurable queue size for smooth processing
+- **Display Configuration**: Dual window setup with customizable positions and sizes
+- **Model Support**: Both PyTorch (.pt) and TensorRT (.engine) models
+- **Calibration Integration**: Direct .npz calibration file loading
+- **Configuration via YAML**: All parameters configurable through `config/stereo_vision.yaml`
 
-Run with: `python stereo_vision.py` (configuration via `config/stereovision.yaml`)
+Run with: `python stereo_vision.py`
 
-#### Data Analysis
-- Explore results and analyze data with `data_analysis.ipynb`.
+#### 4. Data Analysis and Validation (`data_analysis.ipynb`)
+Comprehensive analysis notebook for comparing tracking results with ground truth:
+
+**Analysis Features:**
+- **Ground Truth Comparison**: Flight data vs stereo tracking accuracy assessment
+- **GPS Coordinate Conversion**: Haversine distance calculations and local coordinate transformation
+- **Time Synchronization**: Automated alignment of flight and tracking data
+- **Error Analysis**: RMSE calculations, statistical accuracy metrics
+- **Coordinate System Alignment**: Rotation and offset corrections for coordinate matching
+- **Performance Visualization**: Multiple plot types for error distribution and trends
+- **Quality Assessment**: Categorized accuracy ratings (excellent/good/acceptable/poor)
+- **Trajectory Analysis**: Path comparison and velocity analysis
+
+## Technical Specifications
+
+### Hardware Requirements
+- **GPU**: NVIDIA GPU with compute capability 6.0+ (GTX 1060 or better)
+- **VRAM**: Minimum 4GB for YOLOv11s, 6GB+ recommended for batch processing
+- **RAM**: 8GB minimum, 16GB+ recommended for large datasets
+- **Storage**: SSD recommended for video processing and model training
+
+### Software Stack
+- **Deep Learning**: YOLOv11 (Ultralytics), PyTorch, TensorRT
+- **Computer Vision**: OpenCV 4.12.0 with CUDA support
+- **Filtering**: FilterPy (Kalman filtering)
+- **Data Processing**: NumPy, Pandas, Matplotlib
+- **Configuration**: YAML-based parameter management
 
 ## Citation
-If you use this project in your research, please cite appropriately.
+If you use this project in your research, please cite appropriately and reference the repository.
 
 ## Contact
-For questions or collaboration, please contact:
-- Faryal Hillan (faryalhillan@gmail.com)
+For questions, collaboration, or support:
+- **Faryal Hillan**: faryalhillan@gmail.com
+- **Repository**: https://github.com/faryalhillan/StereoVision

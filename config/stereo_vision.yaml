@@ -39,11 +39,11 @@ bev:
 # Kalman Filter settings for position smoothing
 kalman:
   # Enable/disable Kalman filtering
-  enabled: true
+  enabled: false
   # Measurement noise covariance (lower = trust measurements more)
   measurement_noise: 0.1
   # Process noise covariance (lower = smoother but slower response)
-  process_noise: 0.1
+  process_noise: 0.01
   # Initial covariance (uncertainty at start)
   initial_covariance: 100
   # Frame rate for filter timing (auto-detected if 0)
