@@ -151,14 +151,13 @@ def draw_bev(objects, track_history, config, window_name="BEV Map"):
     cv2.putText(bev_img, 'X', (bev_size[0] - 30, bev_origin[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, axis_color, 2, cv2.LINE_AA)
     cv2.putText(bev_img, 'Z', (bev_origin[0] + 10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, axis_color, 2, cv2.LINE_AA)
 
-    # Update track history (assume one drone, one object per frame)
+    # Update track history
     if len(objects) > 0:
         # Only track the first object (drone)
         X, Z = objects[0][0], objects[0][1]
         track_history.append((X, Z))
     
     # Draw trackline if enabled
-    # NOTE: Track history is intentionally unlimited to visualize the full drone path for the entire video.
     if draw_trackline and len(track_history) > 1:
         pts = [world_to_bev(x, z, bev_origin, bev_scale) for x, z in track_history]
         pts = np.array(pts, dtype=np.int32)
@@ -167,7 +166,7 @@ def draw_bev(objects, track_history, config, window_name="BEV Map"):
         start_pt = pts[0]
         cv2.circle(bev_img, tuple(start_pt), start_point_radius, start_point_color, -1)
     
-    # Draw current objects (filtered positions)
+    # Draw current objects
     for obj in objects:
         X, Z = obj[0], obj[1]
         px, pz = world_to_bev(X, Z, bev_origin, bev_scale)
@@ -216,7 +215,6 @@ def setup_csv_logging(config):
     csv_file = open(csv_path, 'w', newline='')
     csv_writer = csv.writer(csv_file)
     # Write header
-    # Match ground truth CSV: time (ms), datetime, track_id, X, Y, Z, disparity
     csv_writer.writerow(['time(millisecond)', 'datetime', 'track_id', 'X', 'Y', 'Z', 'disparity'])
     
     return csv_writer, csv_file, csv_path, tracking_folder
@@ -230,15 +228,14 @@ def setup_rectification_maps_from_npz(calib_params):
         (mapx1_gpu, mapy1_gpu, mapx2_gpu, mapy2_gpu, frame_gpu_l, frame_gpu_r, rect_gpu_l, rect_gpu_r)
     """
     # Get rectification maps from NPZ
-    
     left_combined = calib_params["left_map_x_rectify"]  # Shape: (H, W, 2)
     right_combined = calib_params["right_map_x_rectify"]  # Shape: (H, W, 2)
     
     # Extract separate X and Y maps from the combined format
-    mapx1 = left_combined[:, :, 0].astype(np.float32)  # X coordinates
-    mapy1 = left_combined[:, :, 1].astype(np.float32)  # Y coordinates  
-    mapx2 = right_combined[:, :, 0].astype(np.float32)  # X coordinates
-    mapy2 = right_combined[:, :, 1].astype(np.float32)  # Y coordinates
+    mapx1 = left_combined[:, :, 0].astype(np.float32)
+    mapy1 = left_combined[:, :, 1].astype(np.float32)  
+    mapx2 = right_combined[:, :, 0].astype(np.float32) 
+    mapy2 = right_combined[:, :, 1].astype(np.float32)  
     
     # Upload to GPU
     mapx1_gpu = cv2.cuda_GpuMat()
@@ -401,11 +398,11 @@ def stereo_frame_producer(left_video, right_video, frame_queue, close_event, sta
         None. Puts (frame_l, frame_r, frame_idx) tuples into frame_queue.
     GPU: Video capture and frame reading
     """
-    # Use CUDA VideoReader for GPU decoding (VIDEO FILES ONLY)
+    # Use CUDA VideoReader for GPU decoding 
+    # (CURRENTLY THIS IMPLEMENTATION IS VIDEO FILES ONLY)
     left_reader = cv2.cudacodec.createVideoReader(left_video)
     right_reader = cv2.cudacodec.createVideoReader(right_video)
     
-    # try:
     cap_tmp = cv2.VideoCapture(left_video)
     video_fps = cap_tmp.get(cv2.CAP_PROP_FPS)
     cap_tmp.release()
@@ -437,6 +434,7 @@ def stereo_frame_producer(left_video, right_video, frame_queue, close_event, sta
         # Apply rectification
         rect_l, _ = rectify(frame_l, mapx1_gpu, mapy1_gpu, rect_gpu_l)
         rect_r, _ = rectify(frame_r, mapx2_gpu, mapy2_gpu, rect_gpu_r)
+
         # Use rectified frames (already on CPU from rectify function)
         final_frame_l = rect_l
         final_frame_r = rect_r
@@ -509,7 +507,6 @@ def stereo_frame_consumer(model, Q, frame_queue, close_event, startup_event, con
                         got_sentinel = True
                         break
                     frame_l, frame_r, frame_idx = item
-                    # Frames are already processed (rectified if enabled) by producer
                     batch_left.append(frame_l)
                     batch_right.append(frame_r)
                     batch_indices.append(frame_idx)
@@ -601,7 +598,6 @@ def stereo_frame_consumer(model, Q, frame_queue, close_event, startup_event, con
             except queue.Empty:
                 continue
             except Exception as e:
-                # Catch error instead of fallback
                 print("Error in consumer:")
                 traceback.print_exc()
                 close_event.set()
@@ -611,7 +607,7 @@ def stereo_frame_consumer(model, Q, frame_queue, close_event, startup_event, con
         cv2.destroyAllWindows()
 
 # === MAIN SCRIPT (CPU unless otherwise noted) ===
-# --- Load Configuration from YAML File ---
+# Load Configuration from YAML File
 with open("config/stereo_vision.yaml", 'r') as f:
     config = yaml.safe_load(f)
 
