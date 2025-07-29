@@ -67,8 +67,9 @@ StereoVision/
 ### Usage
 
 #### 1. Stereo Camera Calibration (`stereo_calibration.ipynb`)
-Source: https://github.com/ChristianOrr/stereo-camera-calibration
-Interactive Jupyter notebook for complete stereo camera calibration:
+**Source**: https://github.com/ChristianOrr/stereo-camera-calibration
+
+Interactive Jupyter notebook for complete stereo camera calibration
 
 #### 2. Model Training and Performance Analysis (`train/train.ipynb`)
 Comprehensive YOLO training pipeline with detailed performance benchmarking
