@@ -1,0 +1,70 @@
+bev:
+  axis_color:
+  - 200
+  - 200
+  - 200
+  current_point_color:
+  - 0
+  - 255
+  - 0
+  current_point_radius: 6
+  draw_trackline: true
+  font_scale: 0.6
+  font_thickness: 2
+  grid_color:
+  - 60
+  - 60
+  - 60
+  label_color:
+  - 255
+  - 255
+  - 255
+  rotation_degrees: 300
+  scale: 20
+  size:
+  - 600
+  - 960
+  start_point_color:
+  - 0
+  - 0
+  - 255
+  start_point_radius: 8
+  track_line_color:
+  - 255
+  - 255
+  - 0
+  track_line_thickness: 2
+display:
+  left_window_pos:
+  - 0
+  - 100
+  right_window_pos:
+  - 640
+  - 100
+  size:
+  - 640
+  - 480
+kalman:
+  enabled: false
+  fps: 30
+  initial_covariance: 100
+  measurement_noise: 0.1
+  process_noise: 0.1
+logging:
+  output_dir: data/tracking
+  save_tracking_data: true
+model:
+  batch_size: 6
+  image_size: 1280
+paths:
+  calibration: calib_kbp/params/stereo_calibration.npz
+  model: train/runs/detect/720_best/weights/best.engine
+  tracker: config/bytetrack.yaml
+  video_left: data/content/left 3.mp4
+  video_right: data/content/right 3.mp4
+queue:
+  maxsize: 64
+stereo:
+  max_y_diff: 10.0
+video:
+  default_fps: 30.0
